@@ -162,9 +162,11 @@ class SubjLog:
         output, errors = p.communicate()
         outfile = open(self.log_file, "a")
         if output:
+            output = output.decode('utf-8')
             print(output)
             outfile.write(output)
         if errors:
+            errors = errors.decode('utf-8')
             outfile.write("ERROR: " + errors)
             print("%s: ERROR: " % self.subject + errors)
         outfile.close()
