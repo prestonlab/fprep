@@ -104,13 +104,13 @@ def fmriqa(
         print("computing image stats")
 
     img = nib.load(infile)
-    imgdata = img.get_data()
+    imgdata = img.get_fdata()
 
     nslices = imgdata.shape[2]
     ntp = imgdata.shape[3]
 
     maskimg = nib.load(maskfile)
-    maskdata = maskimg.get_data()
+    maskdata = maskimg.get_fdata()
     maskvox = np.where(maskdata > 0)
     nonmaskvox = np.where(maskdata == 0)
     if verbose:
