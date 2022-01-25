@@ -141,7 +141,6 @@ def plot_timeseries(
         results = model.fit()
 
     plt.axis(axislims)
-    fig.hold("on")
     if markers is not None:
         for s in markers:
             (lp,) = plt.plot([s, s], axislims[2:4], linewidth=2, color="red")
