@@ -346,7 +346,7 @@ def fmriqa(
 
     if save_sfnr:
         print("writing sfnr image")
-        sfnrimg = nib.Nifti1Image(voxsfnr, img.get_affine())
+        sfnrimg = nib.Nifti1Image(voxsfnr, img.affine)
         sfnrimg.to_filename(os.path.join(qadir, "voxsfnr.nii.gz"))
     return qadir
 
