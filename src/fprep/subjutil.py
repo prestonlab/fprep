@@ -266,19 +266,19 @@ class SubjPath:
         match.sort()
         return match
 
-    def bold_dirs(self, run_pattern="^\D+_\d+$"):
+    def bold_dirs(self, run_pattern=r"^\D+_\d+$"):
         """Get all BOLD subdirectories with standard names."""
         return self.match_dirs(self.path("bold"), run_pattern)
 
-    def feat_dirs(self, model, feat_pattern=".*\.feat$"):
+    def feat_dirs(self, model, feat_pattern=r".*\.feat$"):
         """Get all FEAT directories with standard names."""
         return self.match_dirs(self.path("model", model), feat_pattern)
 
     def bold_files(
         self,
         sepdirs=True,
-        dir_pattern="^\D+_\d+$",
-        file_pattern="^\D+_\d+",
+        dir_pattern=r"^\D+_\d+$",
+        file_pattern=r"^\D+_\d+",
         file_ext=".nii.gz$",
         filename="bold.nii.gz",
         subdir=None,
@@ -318,7 +318,7 @@ class SubjPath:
 
     def rm_partial_bold(self, task, log):
         """Remove incomplete functional scans."""
-        pattern = "functional_%s_\d+" % task
+        pattern = r"functional_%s_\d+" % task
         files = self.bold_files(dir_pattern=pattern)
 
         if len(files) < 2:
