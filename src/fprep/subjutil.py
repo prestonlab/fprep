@@ -180,6 +180,8 @@ class SubjLog:
             outfile = open(self.main_file, "a")
         else:
             outfile = open(self.log_file, "a")
+        if isinstance(message, bytes):
+            message = message.decode('utf-8')
         if wrap:
             outfile.write("\nMESSAGE: " + message + "\n")
         else:
