@@ -17,5 +17,5 @@ for file in sys.argv[1:-1]:
     if os.path.exists(file):
         good_files.append(file)
 
-command = 'pngappend %s %s' % (' - '.join(good_files), sys.argv[-1])
+command = "pngappend %s %s" % (" - ".join(good_files), sys.argv[-1])
 call(command.split())
