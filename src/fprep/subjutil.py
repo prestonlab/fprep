@@ -101,8 +101,8 @@ class SubjLog:
     def get_logo(self):
         """Get the text logo for the Preston lab."""
         logo_file = resource_filename("fprep", "prestonlab_logo.txt")
-        f = open(logo_file, "r")
-        logo = f.read()
+        with open(logo_file, "r") as f:
+            logo = f.read()
         f.close()
         return logo
 
