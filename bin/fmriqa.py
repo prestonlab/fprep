@@ -234,7 +234,7 @@ def fmriqa(
             scrubdes[badvols_expanded_index[i], i] = 1
         np.savetxt(os.path.join(qadir, "scrubdes.txt"), scrubdes, fmt="%d")
     else:
-        scrubdes = []
+        scrubdes = None
 
     # save out complete confound file
     if verbose:
@@ -244,7 +244,7 @@ def fmriqa(
     confound_mtx[1:, 6:12] = motpars[:-1, :] - motpars[1:, :]  # derivs
     confound_mtx[:, 12] = fd
     confound_mtx[:, 13] = DVARS
-    if not scrubdes == []:
+    if scrubdes is not None:
         confound_mtx = np.hstack((confound_mtx, scrubdes))
 
     np.savetxt(os.path.join(qadir, "confound.txt"), confound_mtx)
