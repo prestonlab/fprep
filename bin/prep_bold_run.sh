@@ -25,6 +25,7 @@ while getopts ':k' opt; do
 	    *)
 	        echo "Invalid option: ${opt}."
 	        exit 1
+	        ;;
     esac
 done
 shift $((OPTIND-1))
