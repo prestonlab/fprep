@@ -62,7 +62,7 @@ fsl_tsplot -i bold_cor_mcf.par -t 'MCFLIRT estimated rotations (radians)' -u 1 -
 fsl_tsplot -i bold_cor_mcf.par -t 'MCFLIRT estimated translations (mm)' -u 1 --start=4 --finish=6 -a x,y,z -w 640 -h 144 -o trans.png
 fsl_tsplot -i bold_cor_mcf_abs.rms,bold_cor_mcf_rel.rms -t 'MCFLIRT estimated mean displacement (mm)' -u 1 -w 640 -h 144 -a absolute,relative -o disp.png
 
-pngvstack {rot,trans,disp,mcf}.png
+pngvstack.py {rot,trans,disp,mcf}.png
 
 # average of bias corrected, motion corrected volumes. Will use this
 # for registration and unwarping

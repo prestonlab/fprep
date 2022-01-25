@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+#
+# Concatenate PNG files vertically.
+
+import sys
+import os
+from subprocess import call
+
+if len(sys.argv) == 1:
+    print("pngvstack   Concatenate PNG files vertically.")
+    print()
+    print("Usage: pngvstack png1 png2 ... pngN pngoutput")
+    sys.exit()
+
+good_files = []
+for file in sys.argv[1:-1]:
+    if os.path.exists(file):
+        good_files.append(file)
+
+command = 'pngappend %s %s' % (' - '.join(good_files), sys.argv[-1])
+call(command.split())
