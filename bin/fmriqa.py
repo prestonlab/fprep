@@ -51,10 +51,8 @@ def main():
         TR = float(sys.argv[2])
     else:
         error_and_exit("")
-        # infile='/corral-repl/utexas/poldracklab/openfmri/shared2/ds105/sub001/BOLD/task001_run001/bold_mcf.nii.gz'
-        # TR=2.5
 
-    qadir = fmriqa(infile, TR, verbose=verbose, plot_data=True)
+    fmriqa(infile, TR, verbose=verbose, plot_data=True)
 
 
 def fmriqa(
@@ -120,7 +118,6 @@ def fmriqa(
 
     # load motion parameters and compute FD and identify bad vols for
     # potential scrubbing (ala Power et al.)
-
     motpars = np.loadtxt(motfile)
     fd = qa.compute_fd(motpars)
     np.savetxt(os.path.join(qadir, "fd.txt"), fd)
@@ -175,16 +172,13 @@ def fmriqa(
         ) / np.std(tmp_detrended)
 
     AAZ = np.zeros((nslices, ntp))
-
     for s in range(nslices):
         for t in range(ntp):
             AAZ[s, t] = np.mean(np.abs(detrended_zscore[:, :, s, t]))
 
     JKZ = np.zeros((nslices, ntp))
-
     if verbose:
         print("computing outliers")
-
     loo = sklearn.model_selection.LeaveOneOut()
     for train, test in loo.split(AAZ):
         for tp in range(ntp):
@@ -325,11 +319,6 @@ def fmriqa(
         plt.savefig(os.path.join(qadir, "spike.png"), bbox_inches="tight")
         plt.close()
 
-        if img.shape[0] < img.shape[1] and img.shape[0] < img.shape[2]:
-            orientation = "saggital"
-        else:
-            orientation = "axial"
-
         if verbose:
             print("plotting volume data")
         qa.mk_slice_mosaic(
@@ -345,7 +334,6 @@ def fmriqa(
             print("creating report")
         qa.mk_report(infile, qadir, datavars)
 
-    # def save_vars(infile,qadir,datavars):
     if verbose:
         print("writing QA data")
     datafile = os.path.join(qadir, "qadata.csv")
