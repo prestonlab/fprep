@@ -7,6 +7,7 @@ import subprocess as sub
 from datetime import datetime
 from glob import glob
 from argparse import ArgumentParser
+from pkg_resources import resource_filename
 import numpy as np
 
 
@@ -99,9 +100,7 @@ class SubjLog:
 
     def get_logo(self):
         """Get the text logo for the Preston lab."""
-
-        proj_dir = os.path.dirname(os.path.dirname(__file__))
-        logo_file = os.path.join(proj_dir, "resources", "prestonlab_logo.txt")
+        logo_file = resource_filename("fprep", "prestonlab_logo.txt")
         f = open(logo_file, "r")
         logo = f.read()
         f.close()
