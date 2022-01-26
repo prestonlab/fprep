@@ -234,7 +234,6 @@ def fmriqa(
             scrubdes[badvols_expanded_index[i], i] = 1
         np.savetxt(os.path.join(qadir, "scrubdes.txt"), scrubdes, fmt="%d")
     else:
-        badvols_expanded_index = None
         scrubdes = None
 
     # save out complete confound file
