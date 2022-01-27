@@ -17,7 +17,7 @@ module load ants/2.1.0
 module load matlab
 module load freesurfer/6.0.0
 module load fprepcore
-module load python/3.9.7
+module load python3/3.9.7
 ```
 
 Set up a Python 3 environment to run the scripts (this only has to be done once):
