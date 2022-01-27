@@ -97,7 +97,7 @@ if not os.path.exists(fmapmagbrain):
 
 # run epi_reg
 cmd = (
-    "epi_reg_ants --fmap=%s --fmapmag=%s --fmapmagbrain=%s --wmseg=%s --echospacing=%.06f --pedir=%s -v --epi=%s --t1=%s --t1brain=%s --out=%s --noclean"
+    "epi_reg_ants.sh --fmap=%s --fmapmag=%s --fmapmagbrain=%s --wmseg=%s --echospacing=%.06f --pedir=%s -v --epi=%s --t1=%s --t1brain=%s --out=%s --noclean"
     % (
         fmap,
         fmapmag,
