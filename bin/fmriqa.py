@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# Calculate quality assurance statistics for fMRI data.
+
 """
 fMRI quality control
 - adapted from fsld_raw.R and fBIRN QA tools

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#
+#  Convert FreeSurfer results.
 
 from fprep.subjutil import *
 import os

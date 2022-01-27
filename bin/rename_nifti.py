@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#
+# Reorganize NIfTI files to a standard naming.
 
 from fprep.subjutil import *
 from fprep import heuristic
