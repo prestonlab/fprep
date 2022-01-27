@@ -19,13 +19,13 @@ fi
 keep=0
 while getopts ':k' opt; do
     case $opt in
-	    k)
-	        keep=1
-	        ;;
-	    *)
-	        echo "Invalid option: ${opt}."
-	        exit 1
-	        ;;
+        k)
+            keep=1
+            ;;
+        *)
+            echo "Invalid option: ${opt}."
+            exit 1
+            ;;
     esac
 done
 shift $((OPTIND-1))

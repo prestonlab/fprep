@@ -92,15 +92,15 @@ source "${FREESURFER_HOME}/SetUpFreeSurfer.sh"
 opt=""
 if [[ ${flair} = true ]]; then
     if [[ ! -e ${subjdir}/anatomy/flair.nii.gz ]]; then
-	    echo "Error: flair image not found."
-	    exit 1
+        echo "Error: flair image not found."
+        exit 1
     fi
     opt="${opt} -FLAIR ${subjdir}/anatomy/flair.nii.gz -FLAIRpial"
 fi
 if [[ ${coronal} = true ]]; then
     if [[ ! -e ${subjdir}/anatomy/coronal.nii.gz ]]; then
-	    echo "Error: coronal image not found."
-	    exit 1
+        echo "Error: coronal image not found."
+        exit 1
     fi
     opt="${opt} -hippocampal-subfields-T2 ${subjdir}/anatomy/coronal.nii.gz T2"
 fi
