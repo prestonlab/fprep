@@ -17,7 +17,6 @@ flags = sys.getdlopenflags()
 sys.setdlopenflags(flags | ctypes.RTLD_GLOBAL)
 
 import matplotlib
-
 matplotlib.use("Agg")
 import numpy as np
 import nibabel as nib
@@ -27,6 +26,7 @@ import matplotlib.pyplot as plt
 import sklearn.model_selection
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.mlab import psd
+
 
 sys.setdlopenflags(flags)
 
