@@ -4,6 +4,7 @@
 
 from fprep.subjutil import *
 
+
 parser = SubjParser()
 args = parser.parse_args()
 

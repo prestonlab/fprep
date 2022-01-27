@@ -5,6 +5,7 @@
 from fprep.subjutil import *
 from fprep import heuristic
 
+
 parser = SubjParser()
 args = parser.parse_args()
 
