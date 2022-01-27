@@ -94,7 +94,7 @@ for file in fix_cor mov_cor_reg; do
     int_2_98=$(fslstats $file -p 2 -p 98)
     int2=$(echo "${int_2_98}" | awk '{print $1}')
     int98=$(echo "${int_2_98}" | awk '{print $2}')
-    thresh=$(python -c "print ${int2} + 0.1 * (${int98} - ${int2})")
+    thresh=$(python -c "print(${int2} + 0.1 * (${int98} - ${int2}))")
     fslmaths "${file}" -thr "${thresh}" -bin "${file}_mask"
 done
 fslmaths fix_cor_mask -mul mov_cor_reg_mask mask
