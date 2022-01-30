@@ -454,7 +454,7 @@ else
     int_2_98=$("$FSLDIR/bin/fslstats" "${vrefbrain}" -p 2 -p 98)
     int2=$(echo "$int_2_98" | awk '{print $1}')
     int98=$(echo "${int_2_98}" | awk '{print $2}')
-    thresh=$(python -c "print $int2 + 0.1 * ($int98 - $int2)")
+    thresh=$(python -c "print($int2 + 0.1 * ($int98 - $int2))")
     "$FSLDIR/bin/fslmaths" "${vrefbrain}" -thr "${thresh}" -bin "${vout}_brainmask_str"
 
     n_iter=20
