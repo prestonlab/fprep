@@ -4,20 +4,20 @@
 #   Part of FSL - FMRIB's Software Library
 #   http://www.fmrib.ox.ac.uk/fsl
 #   fsl@fmrib.ox.ac.uk
-#   
+#
 #   Developed at FMRIB (Oxford Centre for Functional Magnetic Resonance
 #   Imaging of the Brain), Department of Clinical Neurology, Oxford
 #   University, Oxford, UK
-#   
-#   
+#
+#
 #   LICENCE
-#   
+#
 #   FMRIB Software Library, Release 5.0 (c) 2012, The University of
 #   Oxford (the "Software")
-#   
+#
 #   The Software remains the property of the University of Oxford ("the
 #   University").
-#   
+#
 #   The Software is distributed "AS IS" under this Licence solely for
 #   non-commercial use in the hope that it will be useful, but in order
 #   that the University as a charitable foundation protects its assets for
@@ -29,13 +29,13 @@
 #   all responsibility for the use which is made of the Software. It
 #   further disclaims any liability for the outcomes arising from using
 #   the Software.
-#   
+#
 #   The Licensee agrees to indemnify the University and hold the
 #   University harmless from and against any and all claims, damages and
 #   liabilities asserted by third parties (including claims for
 #   negligence) which arise directly or indirectly from the use of the
 #   Software or the sale of any products based on the Software.
-#   
+#
 #   No part of the Software may be reproduced, modified, transmitted or
 #   transferred in any form or by any means, electronic or mechanical,
 #   without the express permission of the University. The permission of
@@ -46,7 +46,7 @@
 #   transmitted product. You may be held legally responsible for any
 #   copyright infringement that is caused or encouraged by your failure to
 #   abide by these terms and conditions.
-#   
+#
 #   You are not permitted under this Licence to use this Software
 #   commercially. Use for which any financial return is received shall be
 #   defined as commercial use, and includes (1) integration of all or part
@@ -87,21 +87,18 @@ Usage() {
     exit 1
 }
 
-
-
 get_opt1() {
     arg=$(echo "$1" | sed 's/=.*//')
     echo $arg
 }
 
-
 get_arg1() {
-    if [[ -z $(echo "$1" | grep '=') ]] ; then
+    if [[ -z $(echo "$1" | grep '=') ]]; then
         echo "Option $1 requires an argument" 1>&2
         exit 1
-    else 
+    else
         arg=$(echo "$1" | sed 's/.*=//')
-        if [[ -z $arg ]] ; then
+        if [[ -z $arg ]]; then
             echo "Option $1 requires an argument" 1>&2
             exit 1
         fi
@@ -110,168 +107,212 @@ get_arg1() {
 }
 
 get_imarg1() {
-    arg=$(get_arg1 "$1");
-    arg=$("${FSLDIR}/bin/remove_ext" $arg);
+    arg=$(get_arg1 "$1")
+    arg=$("${FSLDIR}/bin/remove_ext" $arg)
     echo $arg
 }
 
 get_arg2() {
-    if [[ -z $2 ]] ; then
+    if [[ -z $2 ]]; then
         echo "Option $1 requires an argument" 1>&2
         exit 1
     fi
     echo $2
 }
 
-
 # list of variables to be set via the options
-vepi="";
-vrefhead="";
-vrefbrain="";
-vout="";
-use_fmap=no;
-use_weighting=no;
+vepi=""
+vrefhead=""
+vrefbrain=""
+vout=""
+use_fmap=no
+use_weighting=no
 verbose=no
-cleanup=yes;
-fmaprads="";
-fmapmaghead="";
-fmapmagbrain="";
-wmseg="";
-dwell="";
-pe_dir="";
-fdir="y";
-fmapreg=yes;
-
+cleanup=yes
+fmaprads=""
+fmapmaghead=""
+fmapmagbrain=""
+wmseg=""
+dwell=""
+pe_dir=""
+fdir="y"
+fmapreg=yes
 
 # Parse them baby
 
-if [[ $# -lt 4 ]] ; then Usage; exit 0; fi
-while [[ $# -ge 1 ]] ; do
-    iarg=$(get_opt1 "$1");
-    case "$iarg"
-        in
-        --epi)
-            vepi=$(get_imarg1 "$1");
-            shift;;
-        --t1)
-            vrefhead=$(get_imarg1 "$1");
-            shift;;
-        --t1brain)
-            vrefbrain=$(get_imarg1 "$1");
-            shift;;
-        --fmap)
-            fmaprads=$(get_imarg1 "$1");
-            use_fmap=yes;
-            shift;;
-        --fmapmag)
-            fmapmaghead=$(get_imarg1 "$1");
-            shift;;
-        --fmapmagbrain)
-            fmapmagbrain=$(get_imarg1 "$1");
-            shift;;
-        --wmseg)
-            wmseg=$(get_imarg1 "$1");
-            shift;;
-        --out)
-            vout=$(get_imarg1 "$1");
-            shift;;
-        --echospacing)
-            dwell=$(get_arg1 "$1");
-            if [[ $(echo "if ( $dwell > 0.2 ) {1}; if ( $dwell <= 0.2 ) {0}" | bc -l) = 1 ]] ; then
-                msdwell=$(echo "scale=6; $dwell / 1000.0" | bc -l);
-                echo "Echo spacing should be specified in seconds, not milliseconds.  Value of $dwell appears to be incorrectly specified in milliseconds.  Try using the value $msdwell instead.";
-                exit 1;
-            fi
-            shift;;
-        --pedir)
-            pearg=$(get_arg1 "$1");
-            # These are consistent with the ones used in FUGUE (this has been checked)
-            if [[ $pearg = "x" ]] ; then pe_dir=1; fdir="x"; fi
-            if [[ $pearg = "y" ]] ; then pe_dir=2; fdir="y"; fi
-            if [[ $pearg = "z" ]] ; then pe_dir=3; fdir="z"; fi
-            if [[ $pearg = "-x" ]] ; then pe_dir=-1; fdir="x-"; fi
-            if [[ $pearg = "-y" ]] ; then pe_dir=-2; fdir="y-"; fi
-            if [[ $pearg = "-z" ]] ; then pe_dir=-3; fdir="z-"; fi
-            if [[ $pearg = "x-" ]] ; then pe_dir=-1; fdir="x-"; fi
-            if [[ $pearg = "y-" ]] ; then pe_dir=-2; fdir="y-"; fi
-            if [[ $pearg = "z-" ]] ; then pe_dir=-3; fdir="z-"; fi
-            if [[ X${pe_dir} = X ]] ; then
-                echo "Error: invalid phase encode direction specified";
-                exit 2;
-            fi
-            shift;;
-        --weight)
-            refweight=$(get_imarg1 "$1");
-            use_weighting=yes;
-            echo REFWEIGHT = $refweight;
-            shift;;
-        --nofmapreg)
-            fmapreg=no;
-            shift;;
-        --noclean)
-            cleanup=no;
-            shift;;
-        -v)
-            verbose=yes;
-            shift;;
-        -h)
-            Usage;
-            exit 0;;
-        *)
-            #if [ `echo $1 | sed 's/^\(.\).*/\1/'` = "-" ] ; then
-            echo "Unrecognised option $1" 1>&2
+if [[ $# -lt 4 ]]; then
+    Usage
+    exit 0
+fi
+while [[ $# -ge 1 ]]; do
+    iarg=$(get_opt1 "$1")
+    case "$iarg" in
+
+    --epi)
+        vepi=$(get_imarg1 "$1")
+        shift
+        ;;
+    --t1)
+        vrefhead=$(get_imarg1 "$1")
+        shift
+        ;;
+    --t1brain)
+        vrefbrain=$(get_imarg1 "$1")
+        shift
+        ;;
+    --fmap)
+        fmaprads=$(get_imarg1 "$1")
+        use_fmap=yes
+        shift
+        ;;
+    --fmapmag)
+        fmapmaghead=$(get_imarg1 "$1")
+        shift
+        ;;
+    --fmapmagbrain)
+        fmapmagbrain=$(get_imarg1 "$1")
+        shift
+        ;;
+    --wmseg)
+        wmseg=$(get_imarg1 "$1")
+        shift
+        ;;
+    --out)
+        vout=$(get_imarg1 "$1")
+        shift
+        ;;
+    --echospacing)
+        dwell=$(get_arg1 "$1")
+        if [[ $(echo "if ( $dwell > 0.2 ) {1}; if ( $dwell <= 0.2 ) {0}" | bc -l) = 1 ]]; then
+            msdwell=$(echo "scale=6; $dwell / 1000.0" | bc -l)
+            echo "Echo spacing should be specified in seconds, not milliseconds.  Value of $dwell appears to be incorrectly specified in milliseconds.  Try using the value $msdwell instead."
             exit 1
-            #fi
-            #shift;;
+        fi
+        shift
+        ;;
+    --pedir)
+        pearg=$(get_arg1 "$1")
+        # These are consistent with the ones used in FUGUE (this has been checked)
+        if [[ $pearg = "x" ]]; then
+            pe_dir=1
+            fdir="x"
+        fi
+        if [[ $pearg = "y" ]]; then
+            pe_dir=2
+            fdir="y"
+        fi
+        if [[ $pearg = "z" ]]; then
+            pe_dir=3
+            fdir="z"
+        fi
+        if [[ $pearg = "-x" ]]; then
+            pe_dir=-1
+            fdir="x-"
+        fi
+        if [[ $pearg = "-y" ]]; then
+            pe_dir=-2
+            fdir="y-"
+        fi
+        if [[ $pearg = "-z" ]]; then
+            pe_dir=-3
+            fdir="z-"
+        fi
+        if [[ $pearg = "x-" ]]; then
+            pe_dir=-1
+            fdir="x-"
+        fi
+        if [[ $pearg = "y-" ]]; then
+            pe_dir=-2
+            fdir="y-"
+        fi
+        if [[ $pearg = "z-" ]]; then
+            pe_dir=-3
+            fdir="z-"
+        fi
+        if [[ X${pe_dir} = X ]]; then
+            echo "Error: invalid phase encode direction specified"
+            exit 2
+        fi
+        shift
+        ;;
+    --weight)
+        refweight=$(get_imarg1 "$1")
+        use_weighting=yes
+        echo REFWEIGHT = $refweight
+        shift
+        ;;
+    --nofmapreg)
+        fmapreg=no
+        shift
+        ;;
+    --noclean)
+        cleanup=no
+        shift
+        ;;
+    -v)
+        verbose=yes
+        shift
+        ;;
+    -h)
+        Usage
+        exit 0
+        ;;
+    *)
+        #if [ `echo $1 | sed 's/^\(.\).*/\1/'` = "-" ] ; then
+        echo "Unrecognised option $1" 1>&2
+        exit 1
+        #fi
+        #shift;;
+        ;;
     esac
 done
 
 ### Sanity checking of arguments
 
-if [[ -z $vout ]] ; then
+if [[ -z $vout ]]; then
     echo "The compulsory argument --out MUST be used"
-    exit 1;
+    exit 1
 fi
 
-if [[ -z $vepi ]] ; then
+if [[ -z $vepi ]]; then
     echo "The compulsory argument --epi MUST be used"
-    exit 1;
+    exit 1
 fi
 
-if [[ -z $vrefhead ]] ; then
+if [[ -z $vrefhead ]]; then
     echo "The compulsory argument --t1 MUST be used"
-    exit 1;
+    exit 1
 fi
 
-if [[ -z $vrefbrain ]] ; then
+if [[ -z $vrefbrain ]]; then
     echo "The compulsory argument --t1brain MUST be used"
-    exit 1;
+    exit 1
 fi
 
-if [[ $use_fmap = yes ]] ; then
-    if [[ -z $fmaprads ]] ; then
+if [[ $use_fmap = yes ]]; then
+    if [[ -z $fmaprads ]]; then
         echo "The argument --fmap MUST be usspecifieded if using fieldmaps"
-        exit 1;
+        exit 1
     fi
-    if [[ -z $fmapmaghead ]] ; then
+    if [[ -z $fmapmaghead ]]; then
         echo "The argument --fmapmag MUST be specified if using fieldmaps"
-        exit 1;
+        exit 1
     fi
-    if [[ -z $fmapmagbrain ]] ; then
+    if [[ -z $fmapmagbrain ]]; then
         echo "The argument --fmapmagbrain MUST be specified if using fieldmaps"
-        exit 1;
+        exit 1
     fi
-    if [[ -z $pe_dir ]] ; then
+    if [[ -z $pe_dir ]]; then
         echo "The argument --pedir MUST be specified if using fieldmaps"
-        exit 1;
+        exit 1
     fi
-    if [[ -z $dwell ]] ; then
+    if [[ -z $dwell ]]; then
         echo "The argument --echospacing MUST be specified if using fieldmaps"
-        exit 1;
+        exit 1
     fi
 fi
 
-if [[ $verbose = yes ]] ; then
+if [[ $verbose = yes ]]; then
     echo "Arguments are:"
     echo "  vepi = $vepi"
     echo "  vrefhead = $vrefhead"
@@ -290,16 +331,15 @@ fi
 
 ##########################################################################################
 
-
 # create the WM segmentation
-if [[ -z $wmseg ]] ; then
-    if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmseg") = 0 ]] ; then
+if [[ -z $wmseg ]]; then
+    if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmseg") = 0 ]]; then
         echo "Running FAST segmentation"
         "$FSLDIR/bin/fast" -o "${vout}_fast" "${vrefbrain}"
         "$FSLDIR/bin/fslmaths" "${vout}_fast_pve_2" -thr 0.5 -bin "${vout}_fast_wmseg"
     else
         for file in "${vrefbrain}"_wmseg*; do
-            absfile=$("$FSLDIR/bin/fsl_abspath" "$file");
+            absfile=$("$FSLDIR/bin/fsl_abspath" "$file")
             # To link the correct files with extensions
             cp "${absfile}" "${file/${vrefbrain}_wmseg/${vout}_fast_wmseg}"
         done
@@ -307,13 +347,13 @@ if [[ -z $wmseg ]] ; then
 else
     # copy specified wmseg file(s)
     for file in $("$FSLDIR/bin/imglob" -extensions "${wmseg}"); do
-        absfile=$("$FSLDIR/bin/fsl_abspath" "${file}");
+        absfile=$("$FSLDIR/bin/fsl_abspath" "${file}")
         # To link the correct files with extensions
         cp "${absfile}" "${file/${wmseg}/${vout}_fast_wmseg}"
     done
 fi
 # make a WM edge map for visualisation (good to overlay in FSLView)
-if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmedge") = 0 ]] ; then
+if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmedge") = 0 ]]; then
     "$FSLDIR/bin/fslmaths" \
         "${vout}_fast_wmseg" \
         -edge \
@@ -322,12 +362,11 @@ if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmedge") = 0 ]] ; then
         "${vout}_fast_wmedge"
 else
     for file in "${vrefbrain}"_wmedge*; do
-        absfile=$("$FSLDIR/bin/fsl_abspath" "$file");
+        absfile=$("$FSLDIR/bin/fsl_abspath" "$file")
         # To link the correct files with extensions
         cp "${absfile}" "${file/${vrefbrain}_wmedge/${vout}_fast_wmedge}"
     done
 fi
-
 
 # do a standard flirt pre-alignment
 echo "FLIRT pre-alignment"
@@ -340,7 +379,7 @@ echo "FLIRT pre-alignment"
 
 ####################
 
-if [[ $use_fmap = no ]] ; then
+if [[ $use_fmap = no ]]; then
 
     # NO FIELDMAP
     # now run the bbr
@@ -368,7 +407,7 @@ else
 
     # WITH FIELDMAP
     echo "Registering fieldmap to structural"
-    if [[ $fmapreg = yes ]] ; then
+    if [[ $fmapreg = yes ]]; then
         # register fmap to structural image
         antsRegistration \
             -d 3 \
@@ -441,9 +480,10 @@ else
 
     # run bbr with fieldmap
     echo "Running BBR with fieldmap"
-    if [[ $use_weighting = yes ]];
-        then wopt="-refweight $refweight"
-        else wopt=""
+    if [[ $use_weighting = yes ]]; then
+        wopt="-refweight $refweight"
+    else
+        wopt=""
     fi
     "$FSLDIR/bin/flirt" \
         -ref "${vrefhead}" \
@@ -556,7 +596,7 @@ fi
 ####################
 
 # CLEAN UP UNNECESSARY FILES
-if [[ $cleanup = yes ]] ; then
+if [[ $cleanup = yes ]]; then
     "$FSLDIR/bin/imrm" "${vout}_fast_mixeltype" "${vout}"_fast_pve* "${vout}_fast_seg"
     "$FSLDIR/bin/imrm" "${vout}"_fieldmap*mask* "${vout}_fieldmap2str_pad0"
 fi
