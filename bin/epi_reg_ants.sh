@@ -229,7 +229,7 @@ while [[ $# -ge 1 ]]; do
             pe_dir=-3
             fdir="z-"
         fi
-        if [[ X${pe_dir} = X ]]; then
+        if [[ -z ${pe_dir} ]]; then
             echo "Error: invalid phase encode direction specified"
             exit 2
         fi
