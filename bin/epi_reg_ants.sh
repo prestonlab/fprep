@@ -65,7 +65,7 @@
 export LC_ALL=C
 Usage() {
     echo ""
-    echo "Usage: `basename $0` [options] --epi=<EPI image> --t1=<wholehead T1 image> --t1brain=<brain extracted T1 image> --out=<output name>"
+    echo "Usage: $(basename $0) [options] --epi=<EPI image> --t1=<wholehead T1 image> --t1brain=<brain extracted T1 image> --out=<output name>"
     echo " "
     echo "Optional arguments"
     echo "  --fmap=<image>         : fieldmap image (in rad/s)"
@@ -80,7 +80,7 @@ Usage() {
     echo "  -v                     : verbose output"
     echo "  -h                     : display this help message"
     echo " "
-    echo "e.g.:  `basename $0` --epi=example_func --t1=struct --t1brain=struct_brain --out=epi2struct --fmap=fmap_rads --fmapmag=fmap_mag --fmapmagbrain=fmap_mag_brain --echospacing=0.0005 --pedir=-y"
+    echo "e.g.:  $(basename $0) --epi=example_func --t1=struct --t1brain=struct_brain --out=epi2struct --fmap=fmap_rads --fmapmag=fmap_mag --fmapmagbrain=fmap_mag_brain --echospacing=0.0005 --pedir=-y"
     echo " "
     echo "Note that if parallel acceleration is used in the EPI acquisition then the *effective* echo spacing is the actual echo spacing between acquired lines in k-space divided by the acceleration factor."
     echo " "
@@ -90,18 +90,18 @@ Usage() {
 
 
 get_opt1() {
-    arg=`echo $1 | sed 's/=.*//'`
+    arg=$(echo "$1" | sed 's/=.*//')
     echo $arg
 }
 
 
 get_arg1() {
-    if [ X`echo $1 | grep '='` = X ] ; then 
+    if [[ X$(echo "$1" | grep '=') = X ]] ; then
         echo "Option $1 requires an argument" 1>&2
         exit 1
     else 
-        arg=`echo $1 | sed 's/.*=//'`
-        if [ X$arg = X ] ; then
+        arg=$(echo "$1" | sed 's/.*=//')
+        if [[ X$arg = X ]] ; then
             echo "Option $1 requires an argument" 1>&2
             exit 1
         fi
@@ -110,13 +110,13 @@ get_arg1() {
 }
 
 get_imarg1() {
-    arg=`get_arg1 $1`;
-    arg=`$FSLDIR/bin/remove_ext $arg`;
+    arg=$(get_arg1 "$1");
+    arg=$("${FSLDIR}/bin/remove_ext" $arg);
     echo $arg
 }
 
 get_arg2() {
-    if [ X$2 = X ] ; then
+    if [[ X$2 = X ]] ; then
         echo "Option $1 requires an argument" 1>&2
         exit 1
     fi
@@ -145,63 +145,63 @@ fmapreg=yes;
 
 # Parse them baby
 
-if [ $# -lt 4 ] ; then Usage; exit 0; fi
-while [ $# -ge 1 ] ; do
-    iarg=`get_opt1 $1`;
+if [[ $# -lt 4 ]] ; then Usage; exit 0; fi
+while [[ $# -ge 1 ]] ; do
+    iarg=$(get_opt1 "$1");
     case "$iarg"
         in
         --epi)
-            vepi=`get_imarg1 $1`;
+            vepi=$(get_imarg1 "$1");
             shift;;
         --t1)
-            vrefhead=`get_imarg1 $1`;
+            vrefhead=$(get_imarg1 "$1");
             shift;;
         --t1brain)
-            vrefbrain=`get_imarg1 $1`;
+            vrefbrain=$(get_imarg1 "$1");
             shift;;
         --fmap)
-            fmaprads=`get_imarg1 $1`;
+            fmaprads=$(get_imarg1 "$1");
             use_fmap=yes;
             shift;;
         --fmapmag)
-            fmapmaghead=`get_imarg1 $1`;
+            fmapmaghead=$(get_imarg1 "$1");
             shift;;
         --fmapmagbrain)
-            fmapmagbrain=`get_imarg1 $1`;
+            fmapmagbrain=$(get_imarg1 "$1");
             shift;;
         --wmseg)
-            wmseg=`get_imarg1 $1`;
+            wmseg=$(get_imarg1 "$1");
             shift;;
         --out)
-            vout=`get_imarg1 $1`;
+            vout=$(get_imarg1 "$1");
             shift;;
         --echospacing)
-            dwell=`get_arg1 $1`;
-            if [ `echo "if ( $dwell > 0.2 ) {1}; if ( $dwell <= 0.2 ) {0}" | bc -l` = 1 ] ; then
-                msdwell=`echo "scale=6; $dwell / 1000.0" | bc -l`;
+            dwell=$(get_arg1 "$1");
+            if [[ $(echo "if ( $dwell > 0.2 ) {1}; if ( $dwell <= 0.2 ) {0}" | bc -l) = 1 ]] ; then
+                msdwell=$(echo "scale=6; $dwell / 1000.0" | bc -l);
                 echo "Echo spacing should be specified in seconds, not milliseconds.  Value of $dwell appears to be incorrectly specified in milliseconds.  Try using the value $msdwell instead.";
                 exit 1;
             fi
             shift;;
         --pedir)
-            pearg=`get_arg1 $1`;
+            pearg=$(get_arg1 "$1");
             # These are consistent with the ones used in FUGUE (this has been checked)
-            if [ $pearg = "x" ] ; then pe_dir=1; fdir="x"; fi
-            if [ $pearg = "y" ] ; then pe_dir=2; fdir="y"; fi
-            if [ $pearg = "z" ] ; then pe_dir=3; fdir="z"; fi
-            if [ $pearg = "-x" ] ; then pe_dir=-1; fdir="x-"; fi
-            if [ $pearg = "-y" ] ; then pe_dir=-2; fdir="y-"; fi
-            if [ $pearg = "-z" ] ; then pe_dir=-3; fdir="z-"; fi
-            if [ $pearg = "x-" ] ; then pe_dir=-1; fdir="x-"; fi
-            if [ $pearg = "y-" ] ; then pe_dir=-2; fdir="y-"; fi
-            if [ $pearg = "z-" ] ; then pe_dir=-3; fdir="z-"; fi
-            if [ X${pe_dir} = X ] ; then
+            if [[ $pearg = "x" ]] ; then pe_dir=1; fdir="x"; fi
+            if [[ $pearg = "y" ]] ; then pe_dir=2; fdir="y"; fi
+            if [[ $pearg = "z" ]] ; then pe_dir=3; fdir="z"; fi
+            if [[ $pearg = "-x" ]] ; then pe_dir=-1; fdir="x-"; fi
+            if [[ $pearg = "-y" ]] ; then pe_dir=-2; fdir="y-"; fi
+            if [[ $pearg = "-z" ]] ; then pe_dir=-3; fdir="z-"; fi
+            if [[ $pearg = "x-" ]] ; then pe_dir=-1; fdir="x-"; fi
+            if [[ $pearg = "y-" ]] ; then pe_dir=-2; fdir="y-"; fi
+            if [[ $pearg = "z-" ]] ; then pe_dir=-3; fdir="z-"; fi
+            if [[ X${pe_dir} = X ]] ; then
                 echo "Error: invalid phase encode direction specified";
                 exit 2;
             fi
             shift;;
         --weight)
-            refweight=`get_imarg1 $1`;
+            refweight=$(get_imarg1 "$1");
             use_weighting=yes;
             echo REFWEIGHT = $refweight;
             shift;;
@@ -228,50 +228,50 @@ done
 
 ### Sanity checking of arguments
 
-if [ X$vout = X ] ; then
+if [[ X$vout = X ]] ; then
     echo "The compulsory argument --out MUST be used"
     exit 1;
 fi
 
-if [ X$vepi = X ] ; then
+if [[ X$vepi = X ]] ; then
     echo "The compulsory argument --epi MUST be used"
     exit 1;
 fi
 
-if [ X$vrefhead = X ] ; then
+if [[ X$vrefhead = X ]] ; then
     echo "The compulsory argument --t1 MUST be used"
     exit 1;
 fi
 
-if [ X$vrefbrain = X ] ; then
+if [[ X$vrefbrain = X ]] ; then
     echo "The compulsory argument --t1brain MUST be used"
     exit 1;
 fi
 
-if [ $use_fmap = yes ] ; then
-    if [ X$fmaprads = X ] ; then
+if [[ $use_fmap = yes ]] ; then
+    if [[ X$fmaprads = X ]] ; then
         echo "The argument --fmap MUST be usspecifieded if using fieldmaps"
         exit 1;
     fi
-    if [ X$fmapmaghead = X ] ; then
+    if [[ X$fmapmaghead = X ]] ; then
         echo "The argument --fmapmag MUST be specified if using fieldmaps"
         exit 1;
     fi
-    if [ X$fmapmagbrain = X ] ; then
+    if [[ X$fmapmagbrain = X ]] ; then
         echo "The argument --fmapmagbrain MUST be specified if using fieldmaps"
         exit 1;
     fi
-    if [ X$pe_dir = X ] ; then
+    if [[ X$pe_dir = X ]] ; then
         echo "The argument --pedir MUST be specified if using fieldmaps"
         exit 1;
     fi
-    if [ X$dwell = X ] ; then
+    if [[ X$dwell = X ]] ; then
         echo "The argument --echospacing MUST be specified if using fieldmaps"
         exit 1;
     fi
 fi
 
-if [ $verbose = yes ] ; then
+if [[ $verbose = yes ]] ; then
     echo "Arguments are:"
     echo "  vepi = $vepi"
     echo "  vrefhead = $vrefhead"
@@ -292,117 +292,248 @@ fi
 
 
 # create the WM segmentation
-if [ X$wmseg = X ] ; then
-    if [ `$FSLDIR/bin/imtest ${vrefbrain}_wmseg` = 0 ] ; then
+if [[ X$wmseg = X ]] ; then
+    if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmseg") = 0 ]] ; then
         echo "Running FAST segmentation"
-        $FSLDIR/bin/fast -o ${vout}_fast ${vrefbrain}
-        $FSLDIR/bin/fslmaths ${vout}_fast_pve_2 -thr 0.5 -bin ${vout}_fast_wmseg
+        "$FSLDIR/bin/fast" -o "${vout}_fast" "${vrefbrain}"
+        "$FSLDIR/bin/fslmaths" "${vout}_fast_pve_2" -thr 0.5 -bin "${vout}_fast_wmseg"
     else
-        for file in ${vrefbrain}_wmseg*; do
-            absfile=`$FSLDIR/bin/fsl_abspath $file`;
-            cp ${absfile} ${file/${vrefbrain}_wmseg/${vout}_fast_wmseg} #To link the correct files with extensions
+        for file in "${vrefbrain}"_wmseg*; do
+            absfile=$("$FSLDIR/bin/fsl_abspath" "$file");
+            cp "${absfile}" "${file/${vrefbrain}_wmseg/${vout}_fast_wmseg}" #To link the correct files with extensions
         done
     fi
 else
     # copy specified wmseg file(s)
-    for file in `$FSLDIR/bin/imglob -extensions ${wmseg}`; do
-        absfile=`$FSLDIR/bin/fsl_abspath $file`;
-        cp  ${absfile} ${file/${wmseg}/${vout}_fast_wmseg} #To link the correct files with extensions
+    for file in $("$FSLDIR/bin/imglob" -extensions "${wmseg}"); do
+        absfile=$("$FSLDIR/bin/fsl_abspath" "${file}");
+        cp "${absfile}" "${file/${wmseg}/${vout}_fast_wmseg}" #To link the correct files with extensions
     done
 fi
 # make a WM edge map for visualisation (good to overlay in FSLView)
-if [ `$FSLDIR/bin/imtest ${vrefbrain}_wmedge` = 0 ] ; then
-    $FSLDIR/bin/fslmaths ${vout}_fast_wmseg -edge -bin -mas ${vout}_fast_wmseg ${vout}_fast_wmedge
+if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmedge") = 0 ]] ; then
+    "$FSLDIR/bin/fslmaths" "${vout}_fast_wmseg" -edge -bin -mas "${vout}_fast_wmseg" "${vout}_fast_wmedge"
 else
-    for file in ${vrefbrain}_wmedge*; do
-        absfile=`$FSLDIR/bin/fsl_abspath $file`;
-        cp ${absfile} ${file/${vrefbrain}_wmedge/${vout}_fast_wmedge} #To link the correct files with extensions
+    for file in "${vrefbrain}"_wmedge*; do
+        absfile=$("$FSLDIR/bin/fsl_abspath" "$file");
+        cp "${absfile}" "${file/${vrefbrain}_wmedge/${vout}_fast_wmedge}" #To link the correct files with extensions
     done
 fi
 
 
 # do a standard flirt pre-alignment
 echo "FLIRT pre-alignment"
-$FSLDIR/bin/bet ${vepi} ${vepi}_brain
-$FSLDIR/bin/flirt -ref ${vrefbrain} -in ${vepi}_brain -dof 6 -omat ${vout}_init.mat
+"$FSLDIR/bin/bet" "${vepi}" "${vepi}_brain"
+"$FSLDIR/bin/flirt" -ref "${vrefbrain}" -in "${vepi}_brain" -dof 6 -omat "${vout}_init.mat"
 
 ####################
 
-if [ $use_fmap = no ] ; then
+if [[ $use_fmap = no ]] ; then
 
-# NO FIELDMAP
+    # NO FIELDMAP
     # now run the bbr
     echo "Running BBR"
-    $FSLDIR/bin/flirt -ref ${vrefhead} -in ${vepi} -dof 6 -cost bbr -wmseg ${vout}_fast_wmseg -init ${vout}_init.mat -omat ${vout}.mat -out ${vout} -schedule ${FSLDIR}/etc/flirtsch/bbr.sch
-    $FSLDIR/bin/applywarp -i ${vepi} -r ${vrefhead} -o ${vout} --premat=${vout}.mat --interp=spline
+    "$FSLDIR/bin/flirt" \
+        -ref "${vrefhead}" \
+        -in "${vepi}" \
+        -dof 6 \
+        -cost bbr \
+        -wmseg "${vout}_fast_wmseg" \
+        -init "${vout}_init.mat" \
+        -omat "${vout}.mat" \
+        -out "${vout}" \
+        -schedule "${FSLDIR}/etc/flirtsch/bbr.sch"
+    "$FSLDIR/bin/applywarp" \
+        -i "${vepi}" \
+        -r "${vrefhead}" \
+        -o "${vout}" \
+        --premat="${vout}.mat" \
+        --interp=spline
 
 ####################
 
 else
 
-# WITH FIELDMAP
+    # WITH FIELDMAP
     echo "Registering fieldmap to structural"
-    if [ $fmapreg = yes ] ; then
+    if [[ $fmapreg = yes ]] ; then
         # register fmap to structural image
-        antsRegistration -d 3 -r [${vrefbrain}.nii.gz,${fmapmagbrain}.nii.gz,1] -t Rigid[0.1] -m MI[${vrefbrain}.nii.gz,${fmapmagbrain}.nii.gz,1,32,Regular,0.25] -c [1000x500x250x100,1e-6,10] -f 8x4x2x1 -s 3x2x1x0vox -n BSpline -w [0.005,0.995] -o ${vout}_fieldmap2str_
-        ConvertTransformFile 3 ${vout}_fieldmap2str_0GenericAffine.mat ${vout}_fieldmap2str.txt
-        c3d_affine_tool -itk ${vout}_fieldmap2str.txt -ref ${vrefbrain}.nii.gz -src ${fmapmagbrain}.nii.gz -ras2fsl -o ${vout}_fieldmap2str.mat
-        $FSLDIR/bin/flirt -in ${fmapmaghead} -ref ${vrefhead} -applyxfm -init ${vout}_fieldmap2str.mat -out ${vout}_fieldmap2str -interp spline
+        antsRegistration \
+            -d 3 \
+            -r ["${vrefbrain}.nii.gz","${fmapmagbrain}.nii.gz",1] \
+            -t Rigid[0.1] \
+            -m MI["${vrefbrain}.nii.gz","${fmapmagbrain}.nii.gz",1,32,Regular,0.25] \
+            -c [1000x500x250x100,1e-6,10] \
+            -f 8x4x2x1 \
+            -s 3x2x1x0vox \
+            -n BSpline \
+            -w [0.005,0.995] \
+            -o "${vout}_fieldmap2str_"
+        ConvertTransformFile \
+            3 \
+            "${vout}_fieldmap2str_0GenericAffine.mat" \
+            "${vout}_fieldmap2str.txt"
+        c3d_affine_tool \
+            -itk "${vout}_fieldmap2str.txt" \
+            -ref "${vrefbrain}.nii.gz" \
+            -src "${fmapmagbrain}.nii.gz" \
+            -ras2fsl \
+            -o "${vout}_fieldmap2str.mat"
+        "$FSLDIR/bin/flirt" \
+            -in "${fmapmaghead}" \
+            -ref "${vrefhead}" \
+            -applyxfm \
+            -init "${vout}_fieldmap2str.mat" \
+            -out "${vout}_fieldmap2str" \
+            -interp spline
     else
-        $FSLDIR/bin/imcp ${fmapmaghead} ${vout}_fieldmap2str
-        cp $FSLDIR/etc/flirtsch/ident.mat ${vout}_fieldmap2str.mat
+        "$FSLDIR/bin/imcp" "${fmapmaghead}" "${vout}_fieldmap2str"
+        cp "$FSLDIR/etc/flirtsch/ident.mat" "${vout}_fieldmap2str.mat"
     fi
     # unmask the fieldmap (necessary to avoid edge effects)
-    $FSLDIR/bin/fslmaths ${fmapmagbrain} -abs -bin ${vout}_fieldmaprads_mask
-    $FSLDIR/bin/fslmaths ${fmaprads} -abs -bin -mul ${vout}_fieldmaprads_mask ${vout}_fieldmaprads_mask
-    $FSLDIR/bin/fugue --loadfmap=${fmaprads} --mask=${vout}_fieldmaprads_mask --unmaskfmap --savefmap=${vout}_fieldmaprads_unmasked --unwarpdir=${fdir}   # the direction here should take into account the initial affine (it needs to be the direction in the EPI)
+    "$FSLDIR/bin/fslmaths" "${fmapmagbrain}" -abs -bin "${vout}_fieldmaprads_mask"
+    "$FSLDIR/bin/fslmaths" \
+        "${fmaprads}" \
+        -abs \
+        -bin \
+        -mul "${vout}_fieldmaprads_mask" \
+        "${vout}_fieldmaprads_mask"
+    # the direction here should take into account the initial affine (it needs to be the direction in the EPI)
+    "$FSLDIR/bin/fugue" \
+        --loadfmap="${fmaprads}" \
+        --mask="${vout}_fieldmaprads_mask" \
+        --unmaskfmap \
+        --savefmap="${vout}_fieldmaprads_unmasked" \
+        --unwarpdir="${fdir}"
 
     # the following is a NEW HACK to fix extrapolation when fieldmap is too small
-    $FSLDIR/bin/applywarp -i ${vout}_fieldmaprads_unmasked -r ${vrefhead} --premat=${vout}_fieldmap2str.mat -o ${vout}_fieldmaprads2str_pad0
-    $FSLDIR/bin/fslmaths ${vout}_fieldmaprads2str_pad0 -abs -bin ${vout}_fieldmaprads2str_innermask
-    $FSLDIR/bin/fugue --loadfmap=${vout}_fieldmaprads2str_pad0 --mask=${vout}_fieldmaprads2str_innermask --unmaskfmap --unwarpdir=${fdir} --savefmap=${vout}_fieldmaprads2str_dilated
-    $FSLDIR/bin/fslmaths ${vout}_fieldmaprads2str_dilated ${vout}_fieldmaprads2str
+    "$FSLDIR/bin/applywarp" \
+        -i "${vout}_fieldmaprads_unmasked" \
+        -r "${vrefhead}" \
+        --premat="${vout}_fieldmap2str.mat" \
+        -o "${vout}_fieldmaprads2str_pad0"
+    "$FSLDIR/bin/fslmaths" \
+        "${vout}_fieldmaprads2str_pad0" \
+        -abs \
+        -bin "${vout}_fieldmaprads2str_innermask"
+    "$FSLDIR/bin/fugue" \
+        --loadfmap="${vout}_fieldmaprads2str_pad0" \
+        --mask="${vout}_fieldmaprads2str_innermask" \
+        --unmaskfmap \
+        --unwarpdir="${fdir}" \
+        --savefmap="${vout}_fieldmaprads2str_dilated"
+    "$FSLDIR/bin/fslmaths" \
+        "${vout}_fieldmaprads2str_dilated" \
+        "${vout}_fieldmaprads2str"
 
     # run bbr with fieldmap
     echo "Running BBR with fieldmap"
-    if [ $use_weighting = yes ] ; then wopt="-refweight $refweight"; else wopt=""; fi
-    $FSLDIR/bin/flirt -ref ${vrefhead} -in ${vepi} -dof 6 -cost bbr -wmseg ${vout}_fast_wmseg -init ${vout}_init.mat -omat ${vout}_bbr.mat -out ${vout}_1vol -schedule ${FSLDIR}/etc/flirtsch/bbr.sch -echospacing ${dwell} -pedir ${pe_dir} -fieldmap ${vout}_fieldmaprads2str -interp spline $wopt
+    if [[ $use_weighting = yes ]];
+        then wopt="-refweight $refweight"
+        else wopt=""
+    fi
+    "$FSLDIR/bin/flirt" \
+        -ref "${vrefhead}" \
+        -in "${vepi}" \
+        -dof 6 \
+        -cost bbr \
+        -wmseg "${vout}_fast_wmseg" \
+        -init "${vout}_init.mat" \
+        -omat "${vout}_bbr.mat" \
+        -out "${vout}_1vol" \
+        -schedule "${FSLDIR}/etc/flirtsch/bbr.sch" \
+        -echospacing "${dwell}" \
+        -pedir "${pe_dir}" \
+        -fieldmap "${vout}_fieldmaprads2str" \
+        -interp spline \
+        $wopt
 
     # use ants to refine the fit
     echo "Using ANTS to refine registration"
     # create brain mask
-    int_2_98=$($FSLDIR/bin/fslstats ${vrefbrain} -p 2 -p 98)
-    int2=$(echo $int_2_98 | awk '{print $1}')
-    int98=$(echo $int_2_98 | awk '{print $2}')
+    int_2_98=$("$FSLDIR/bin/fslstats" "${vrefbrain}" -p 2 -p 98)
+    int2=$(echo "$int_2_98" | awk '{print $1}')
+    int98=$(echo "${int_2_98}" | awk '{print $2}')
     thresh=$(python -c "print $int2 + 0.1 * ($int98 - $int2)")
-    $FSLDIR/bin/fslmaths ${vrefbrain} -thr $thresh -bin ${vout}_brainmask_str
+    "$FSLDIR/bin/fslmaths" "${vrefbrain}" -thr "${thresh}" -bin "${vout}_brainmask_str"
 
     n_iter=20
     xfm=${vout}_bbr.mat
     moving=${vout}_1vol
     for i in $(seq $n_iter); do
         echo "Iteration $i"
-        $FSLDIR/bin/fslmaths ${moving} -mas ${vout}_brainmask_str ${moving}_brain
+        "$FSLDIR/bin/fslmaths" \
+            "${moving}" \
+            -mas "${vout}_brainmask_str" \
+            "${moving}_brain"
         # rigid registration of unwarped brain-extracted epi to
         # structural brain
-        antsRegistration -d 3 -r [${vrefbrain}.nii.gz,${moving}_brain.nii.gz,1] -t Rigid[0.1] -m MI[${vrefbrain}.nii.gz,${moving}_brain.nii.gz,1,32,Regular,0.25] -c [1000x500x250x100,1e-6,10] -f 8x4x2x1 -s 3x2x1x0vox -n BSpline -w [0.005,0.995] -o ${vout}_ants_
-        ConvertTransformFile 3 ${vout}_ants_0GenericAffine.mat ${vout}_ants_0GenericAffine.txt
-        c3d_affine_tool -itk ${vout}_ants_0GenericAffine.txt -ref ${vrefhead}.nii.gz -src ${moving}_brain.nii.gz -ras2fsl -o ${vout}_ants.mat
+        antsRegistration \
+            -d 3 \
+            -r ["${vrefbrain}.nii.gz","${moving}_brain.nii.gz",1] \
+            -t Rigid[0.1] \
+            -m MI["${vrefbrain}.nii.gz","${moving}_brain.nii.gz",1,32,Regular,0.25] \
+            -c [1000x500x250x100,1e-6,10] \
+            -f 8x4x2x1 \
+            -s 3x2x1x0vox \
+            -n BSpline \
+            -w [0.005,0.995] \
+            -o ${vout}_ants_
+        ConvertTransformFile \
+            3 \
+            "${vout}_ants_0GenericAffine.mat" \
+            "${vout}_ants_0GenericAffine.txt"
+        c3d_affine_tool \
+            -itk "${vout}_ants_0GenericAffine.txt" \
+            -ref "${vrefhead}.nii.gz" \
+            -src "${moving}_brain.nii.gz" \
+            -ras2fsl \
+            -o "${vout}_ants.mat"
 
         # bbr and ants
-        convert_xfm -omat ${vout}_iter${i}.mat -concat ${vout}_ants.mat ${xfm}
+        convert_xfm -omat "${vout}_iter${i}.mat" -concat "${vout}_ants.mat" "${xfm}"
         xfm=${vout}_iter${i}.mat
-        cp ${vout}_iter${i}.mat ${vout}.mat
-        cat ${vout}.mat
+        cp "${vout}_iter${i}.mat" "${vout}.mat"
+        cat "${vout}.mat"
 
         # make equivalent warp fields
-        $FSLDIR/bin/convert_xfm -omat ${vout}_inv.mat -inverse ${vout}.mat
-        $FSLDIR/bin/convert_xfm -omat ${vout}_fieldmaprads2epi.mat -concat ${vout}_inv.mat ${vout}_fieldmap2str.mat
-        $FSLDIR/bin/applywarp -i ${vout}_fieldmaprads_unmasked -r ${vepi} --premat=${vout}_fieldmaprads2epi.mat -o ${vout}_fieldmaprads2epi
-        $FSLDIR/bin/fslmaths ${vout}_fieldmaprads2epi -abs -bin ${vout}_fieldmaprads2epi_mask
-        $FSLDIR/bin/fugue --loadfmap=${vout}_fieldmaprads2epi --mask=${vout}_fieldmaprads2epi_mask --saveshift=${vout}_fieldmaprads2epi_shift --unmaskshift --dwell=${dwell} --unwarpdir=${fdir}
-        $FSLDIR/bin/convertwarp -r ${vrefhead} -s ${vout}_fieldmaprads2epi_shift --postmat=${vout}.mat -o ${vout}_warp --shiftdir=${fdir} --relout
-        $FSLDIR/bin/applywarp -i ${vepi} -r ${vrefhead} -o ${vout} -w ${vout}_warp --interp=spline --rel
+        "$FSLDIR/bin/convert_xfm" \
+            -omat "${vout}_inv.mat" \
+            -inverse "${vout}.mat"
+        "$FSLDIR/bin/convert_xfm" \
+            -omat "${vout}_fieldmaprads2epi.mat" \
+            -concat "${vout}_inv.mat" "${vout}_fieldmap2str.mat"
+        "$FSLDIR/bin/applywarp" \
+            -i "${vout}_fieldmaprads_unmasked" \
+            -r "${vepi}" \
+            --premat="${vout}_fieldmaprads2epi.mat" \
+            -o "${vout}_fieldmaprads2epi"
+        "$FSLDIR/bin/fslmaths" \
+            "${vout}_fieldmaprads2epi" \
+            -abs \
+            -bin \
+            "${vout}_fieldmaprads2epi_mask"
+        "$FSLDIR/bin/fugue" \
+            --loadfmap="${vout}_fieldmaprads2epi" \
+            --mask="${vout}_fieldmaprads2epi_mask" \
+            --saveshift="${vout}_fieldmaprads2epi_shift" \
+            --unmaskshift \
+            --dwell="${dwell}" \
+            --unwarpdir="${fdir}"
+        "$FSLDIR/bin/convertwarp" \
+            -r "${vrefhead}" \
+            -s "${vout}_fieldmaprads2epi_shift" \
+            --postmat="${vout}.mat" \
+            -o "${vout}_warp" \
+            --shiftdir="${fdir}" \
+            --relout
+        "$FSLDIR/bin/applywarp" \
+            -i "${vepi}" \
+            -r "${vrefhead}" \
+            -o "${vout}" \
+            -w "${vout}_warp" \
+            --interp=spline \
+            --rel
 
         # use unwarped, registered epi to refine registration on next step
         moving=${vout}
@@ -412,9 +543,7 @@ fi
 ####################
 
 # CLEAN UP UNNECESSARY FILES
-if [ $cleanup = yes ] ; then
-    $FSLDIR/bin/imrm ${vout}_fast_mixeltype ${vout}_fast_pve* ${vout}_fast_seg
-    $FSLDIR/bin/imrm ${vout}_fieldmap*mask* ${vout}_fieldmap2str_pad0
+if [[ $cleanup = yes ]] ; then
+    "$FSLDIR/bin/imrm" "${vout}_fast_mixeltype" "${vout}"_fast_pve* "${vout}_fast_seg"
+    "$FSLDIR/bin/imrm" "${vout}"_fieldmap*mask* "${vout}_fieldmap2str_pad0"
 fi
-
-
