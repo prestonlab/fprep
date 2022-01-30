@@ -300,23 +300,31 @@ if [[ -z $wmseg ]] ; then
     else
         for file in "${vrefbrain}"_wmseg*; do
             absfile=$("$FSLDIR/bin/fsl_abspath" "$file");
-            cp "${absfile}" "${file/${vrefbrain}_wmseg/${vout}_fast_wmseg}" #To link the correct files with extensions
+            # To link the correct files with extensions
+            cp "${absfile}" "${file/${vrefbrain}_wmseg/${vout}_fast_wmseg}"
         done
     fi
 else
     # copy specified wmseg file(s)
     for file in $("$FSLDIR/bin/imglob" -extensions "${wmseg}"); do
         absfile=$("$FSLDIR/bin/fsl_abspath" "${file}");
-        cp "${absfile}" "${file/${wmseg}/${vout}_fast_wmseg}" #To link the correct files with extensions
+        # To link the correct files with extensions
+        cp "${absfile}" "${file/${wmseg}/${vout}_fast_wmseg}"
     done
 fi
 # make a WM edge map for visualisation (good to overlay in FSLView)
 if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmedge") = 0 ]] ; then
-    "$FSLDIR/bin/fslmaths" "${vout}_fast_wmseg" -edge -bin -mas "${vout}_fast_wmseg" "${vout}_fast_wmedge"
+    "$FSLDIR/bin/fslmaths" \
+        "${vout}_fast_wmseg" \
+        -edge \
+        -bin \
+        -mas "${vout}_fast_wmseg" \
+        "${vout}_fast_wmedge"
 else
     for file in "${vrefbrain}"_wmedge*; do
         absfile=$("$FSLDIR/bin/fsl_abspath" "$file");
-        cp "${absfile}" "${file/${vrefbrain}_wmedge/${vout}_fast_wmedge}" #To link the correct files with extensions
+        # To link the correct files with extensions
+        cp "${absfile}" "${file/${vrefbrain}_wmedge/${vout}_fast_wmedge}"
     done
 fi
 
@@ -324,7 +332,11 @@ fi
 # do a standard flirt pre-alignment
 echo "FLIRT pre-alignment"
 "$FSLDIR/bin/bet" "${vepi}" "${vepi}_brain"
-"$FSLDIR/bin/flirt" -ref "${vrefbrain}" -in "${vepi}_brain" -dof 6 -omat "${vout}_init.mat"
+"$FSLDIR/bin/flirt" \
+    -ref "${vrefbrain}" \
+    -in "${vepi}_brain" \
+    -dof 6 \
+    -omat "${vout}_init.mat"
 
 ####################
 
@@ -398,7 +410,8 @@ else
         -bin \
         -mul "${vout}_fieldmaprads_mask" \
         "${vout}_fieldmaprads_mask"
-    # the direction here should take into account the initial affine (it needs to be the direction in the EPI)
+    # the direction here should take into account the initial affine
+    # (it needs to be the direction in the EPI)
     "$FSLDIR/bin/fugue" \
         --loadfmap="${fmaprads}" \
         --mask="${vout}_fieldmaprads_mask" \
