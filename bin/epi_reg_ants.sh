@@ -96,12 +96,12 @@ get_opt1() {
 
 
 get_arg1() {
-    if [[ X$(echo "$1" | grep '=') = X ]] ; then
+    if [[ -z $(echo "$1" | grep '=') ]] ; then
         echo "Option $1 requires an argument" 1>&2
         exit 1
     else 
         arg=$(echo "$1" | sed 's/.*=//')
-        if [[ X$arg = X ]] ; then
+        if [[ -z $arg ]] ; then
             echo "Option $1 requires an argument" 1>&2
             exit 1
         fi
@@ -116,7 +116,7 @@ get_imarg1() {
 }
 
 get_arg2() {
-    if [[ X$2 = X ]] ; then
+    if [[ -z $2 ]] ; then
         echo "Option $1 requires an argument" 1>&2
         exit 1
     fi
@@ -228,44 +228,44 @@ done
 
 ### Sanity checking of arguments
 
-if [[ X$vout = X ]] ; then
+if [[ -z $vout ]] ; then
     echo "The compulsory argument --out MUST be used"
     exit 1;
 fi
 
-if [[ X$vepi = X ]] ; then
+if [[ -z $vepi ]] ; then
     echo "The compulsory argument --epi MUST be used"
     exit 1;
 fi
 
-if [[ X$vrefhead = X ]] ; then
+if [[ -z $vrefhead ]] ; then
     echo "The compulsory argument --t1 MUST be used"
     exit 1;
 fi
 
-if [[ X$vrefbrain = X ]] ; then
+if [[ -z $vrefbrain ]] ; then
     echo "The compulsory argument --t1brain MUST be used"
     exit 1;
 fi
 
 if [[ $use_fmap = yes ]] ; then
-    if [[ X$fmaprads = X ]] ; then
+    if [[ -z $fmaprads ]] ; then
         echo "The argument --fmap MUST be usspecifieded if using fieldmaps"
         exit 1;
     fi
-    if [[ X$fmapmaghead = X ]] ; then
+    if [[ -z $fmapmaghead ]] ; then
         echo "The argument --fmapmag MUST be specified if using fieldmaps"
         exit 1;
     fi
-    if [[ X$fmapmagbrain = X ]] ; then
+    if [[ -z $fmapmagbrain ]] ; then
         echo "The argument --fmapmagbrain MUST be specified if using fieldmaps"
         exit 1;
     fi
-    if [[ X$pe_dir = X ]] ; then
+    if [[ -z $pe_dir ]] ; then
         echo "The argument --pedir MUST be specified if using fieldmaps"
         exit 1;
     fi
-    if [[ X$dwell = X ]] ; then
+    if [[ -z $dwell ]] ; then
         echo "The argument --echospacing MUST be specified if using fieldmaps"
         exit 1;
     fi
@@ -292,7 +292,7 @@ fi
 
 
 # create the WM segmentation
-if [[ X$wmseg = X ]] ; then
+if [[ -z $wmseg ]] ; then
     if [[ $("$FSLDIR/bin/imtest" "${vrefbrain}_wmseg") = 0 ]] ; then
         echo "Running FAST segmentation"
         "$FSLDIR/bin/fast" -o "${vout}_fast" "${vrefbrain}"
