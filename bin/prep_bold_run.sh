@@ -19,16 +19,16 @@ fi
 keep=0
 while getopts ':k' opt; do
     case $opt in
-        k)
-            keep=1
-            ;;
-        *)
-            echo "Invalid option: ${opt}."
-            exit 1
-            ;;
+    k)
+        keep=1
+        ;;
+    *)
+        echo "Invalid option: ${opt}."
+        exit 1
+        ;;
     esac
 done
-shift $((OPTIND-1))
+shift $((OPTIND - 1))
 
 bolddir=$1
 if [[ ! -d $bolddir ]]; then
@@ -75,7 +75,7 @@ fi
 ## time series preprocessing
 
 # motion correction applied to original volumes
-cat bold_cor_mcf.mat/MAT* > bold_cor_mcf.cat
+cat bold_cor_mcf.mat/MAT* >bold_cor_mcf.cat
 applywarp -i bold -o bold_mcf -r bold_cor_mcf_avg --premat=bold_cor_mcf.cat --interp=spline --paddingsize=1
 
 # mean image of originals motion corrected

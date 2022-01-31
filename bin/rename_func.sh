@@ -20,7 +20,7 @@ oldrunnos=$(get_run_nos.py "${olddir}" "${oldbase}")
 
 count=0
 for oldno in $oldrunnos; do
-    count=$(("${count}"+1))
+    count=$(("${count}" + 1))
     oldrundir=${olddir}/${oldbase}${oldno}
     newrundir=${newdir}/${newbase}${count}
     mv "${oldrundir}" "${newrundir}"

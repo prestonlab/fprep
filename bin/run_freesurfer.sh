@@ -24,7 +24,7 @@ if [[ $# -lt 2 ]]; then
     echo '    be in: $STUDYDIR/$subject/anatomy/flair.nii.gz'
     echo
     echo "-b"
-    echo "    If flagged the image will be bias corrected before running" 
+    echo "    If flagged the image will be bias corrected before running"
     echo "    freesurfer."
     echo
     echo "-o outname"
@@ -48,25 +48,25 @@ flair=false
 bias=false
 while getopts ":o:cf:b" opt; do
     case $opt in
-        o)
-            outname=$OPTARG
-            ;;
-        c)
-            coronal=true
-            ;;
-        f)
-            flair=true
-            ;;
-        b)
-            bias=true
-            ;;
-        *)
-            echo "Invalid option: ${opt}."
-            exit 1
-            ;;
+    o)
+        outname=$OPTARG
+        ;;
+    c)
+        coronal=true
+        ;;
+    f)
+        flair=true
+        ;;
+    b)
+        bias=true
+        ;;
+    *)
+        echo "Invalid option: ${opt}."
+        exit 1
+        ;;
     esac
 done
-shift $((OPTIND-1))
+shift $((OPTIND - 1))
 
 subject=$1
 nthreads=$2

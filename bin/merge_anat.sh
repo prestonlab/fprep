@@ -23,20 +23,20 @@ coronal=0
 register=1
 while getopts ':cm' opt; do
     case $opt in
-        c)
-            coronal=1
-            ;;
-        m)
-            register=0
-            ;;
-        *)
-            echo "Invalid option: ${opt}."
-            exit 1
-            ;;
+    c)
+        coronal=1
+        ;;
+    m)
+        register=0
+        ;;
+    *)
+        echo "Invalid option: ${opt}."
+        exit 1
+        ;;
     esac
 done
 
-shift $((OPTIND-1))
+shift $((OPTIND - 1))
 
 mov=$1
 fix=$2
