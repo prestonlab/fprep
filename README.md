@@ -4,6 +4,17 @@
 
 Preprocessing of fMRI data.
 
+fPrep combines preprocessing utilities from FSL and FreeSurfer with advanced image registration using ANTS.
+Commands are logged and most scripts support doing a "dry run" that prints the commands that would be run.
+This helps make it easier to understand how the preprocessing works.
+Scripts are modular, separating out individual steps for easier modification.
+
+The fPrep pipeline supports the following preprocessing steps:
+* Conversion of source files from DICOM to NIfTI format.
+* Basic preprocessing of functional data, including motion correction and quality assurance.
+* Basic preprocessing of anatomical data, including surface reconstruction using FreeSurfer.
+* Unwarping and registration of functional data.
+
 
 ## Installation on TACC resources
 
