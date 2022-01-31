@@ -12,12 +12,12 @@ Version numbers of dependencies list below are what have been previously tested.
 Newer versions will generally also work, though look at the release notes for each package to be sure.
 ```bash
 module use /work/03206/mortonne/software/modules
-module load fsl/5.0.11
+module load fsl/5.0.11  # earlier versions do not support Python 3
 module load ants/2.1.0
 module load matlab
-module load freesurfer/6.0.0
-module load fprepcore
-module load python3/3.9.7
+module load freesurfer/6.0.0  # 5.3 will likely also work
+module load fprepcore/1.0.0  # utilities needed for the pipeline
+module load python3/3.9.7  # most versions of Python 3 should work
 ```
 
 Set up a Python 3 environment to run the scripts (this only has to be done once):
