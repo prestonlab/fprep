@@ -37,6 +37,12 @@ See the [tutorial](https://github.com/prestonlab/fprep/wiki/Introduction-and-Set
 for instructions for running on a sample dataset on TACC.
 
 
+## Related code
+
+The quality assurance code is adapted from [fmriqa](https://github.com/poldrack/fmriqa) by Russ Poldrack.
+The `epi_reg_ants` script is adapted from `epi_reg` from FSL 5. 
+
+
 ## Citation
 
 If you use fPrep, please cite the following:
