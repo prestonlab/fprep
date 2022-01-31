@@ -33,8 +33,8 @@ After Python 3 packages have been installed, for later sessions you only need to
 
 ## Procedure
 
-See the FAT tutorial for instructions for running on a sample dataset on TACC.
-TODO: update the tutorial and add it to the fprep wiki.
+See the [tutorial](https://github.com/prestonlab/fprep/wiki/Introduction-and-Setup)
+for instructions for running on a sample dataset on TACC.
 
 
 ## Citation
