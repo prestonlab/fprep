@@ -39,7 +39,6 @@ def dicom_filetype(hdr):
         for name in scan_protocols[scan_type]:
             if (
                 (hdr.ProtocolName.find(name) > -1)
-                or (hdr.SequenceName.find(name) > -1)
                 or (hdr.SeriesDescription.find(name) > -1)
             ):
                 file_type = scan_type
