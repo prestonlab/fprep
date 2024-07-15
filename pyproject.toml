@@ -1,7 +1,7 @@
 [project]
 name = "fprep"
 description = "fprep: Preprocessing of fMRI data"
-version = "1.0.0"
+version = "1.0.1"
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [{name = "Neal W Morton", email = "mortonne@gmail.com"}]
