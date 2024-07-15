@@ -99,8 +99,8 @@ class SubjLog:
         self.log_file = log_file
 
     def get_logo(self):
-        """Get the text logo for the Preston lab."""
-        logo_file = resource_filename("fprep", "data/prestonlab_logo.txt")
+        """Get the text logo for fPrep."""
+        logo_file = resource_filename("fprep", "data/fprep_logo.txt")
         with open(logo_file, "r") as f:
             logo = f.read()
         f.close()
