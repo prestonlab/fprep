@@ -18,7 +18,7 @@ dependencies = [
     "matplotlib",
     "nibabel",
     "statsmodels",
-    "sklearn",
+    "scikit-learn",
     "reportlab"
 ]
 
